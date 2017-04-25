@@ -25,6 +25,7 @@ describe('hapi integration', () => {
   });
 });
 
+
 describe('deployments', () => {
   it('can be created', (done) => {
     const server = new Hapi.Server();
@@ -103,6 +104,7 @@ describe('deployments', () => {
   });
 });
 
+
 describe('datacenters', () => {
   it('can be retrieved', (done) => {
     const server = new Hapi.Server();
@@ -147,6 +149,106 @@ describe('manifests', () => {
       server.inject({ method: 'GET', url: '/deployment/42/manifest/5' }, (res) => {
         expect(res.statusCode).to.equal(200);
         expect(res.result.file).to.exist();
+        done();
+      });
+    });
+  });
+});
+
+
+describe('activities', () => {
+  it('can be retrieved', (done) => {
+    const server = new Hapi.Server();
+    server.connection();
+    server.register(PortalApi, (err) => {
+      expect(err).to.not.exist();
+
+      server.inject({ method: 'GET', url: '/deployment/42/activities' }, (res) => {
+        expect(res.statusCode).to.equal(200);
+        expect(res.result.length).to.equal(2);
+        done();
+      });
+    });
+  });
+});
+
+
+describe('metrics', () => {
+  it('can be retrieved', (done) => {
+    const server = new Hapi.Server();
+    server.connection();
+    server.register(PortalApi, (err) => {
+      expect(err).to.not.exist();
+
+      server.inject({ method: 'GET', url: '/deployment/42/metrics' }, (res) => {
+        expect(res.statusCode).to.equal(200);
+        expect(res.result.length).to.equal(2);
+        done();
+      });
+    });
+  });
+});
+
+
+describe('deployment state', () => {
+  it('can be retrieved', (done) => {
+    const server = new Hapi.Server();
+    server.connection();
+    server.register(PortalApi, (err) => {
+      expect(err).to.not.exist();
+
+      server.inject({ method: 'GET', url: '/deployment/42/state' }, (res) => {
+        expect(res.statusCode).to.equal(200);
+        done();
+      });
+    });
+  });
+
+  it('can be updated', (done) => {
+    const server = new Hapi.Server();
+    server.connection();
+    server.register(PortalApi, (err) => {
+      expect(err).to.not.exist();
+      const payload = {
+        action: 'restart'
+      };
+
+      server.inject({ method: 'PUT', url: '/deployment/42/state', payload }, (res) => {
+        expect(res.statusCode).to.equal(200);
+        done();
+      });
+    });
+  });
+});
+
+
+describe('services', () => {
+  it('can be retrieved', (done) => {
+    const server = new Hapi.Server();
+    server.connection();
+    server.register(PortalApi, (err) => {
+      expect(err).to.not.exist();
+
+      server.inject({ method: 'GET', url: '/deployment/42/services' }, (res) => {
+        expect(res.statusCode).to.equal(200);
+        expect(res.result.length).to.equal(2);
+        done();
+      });
+    });
+  });
+
+  it('can be updated', (done) => {
+    const server = new Hapi.Server();
+    server.connection();
+    server.register(PortalApi, (err) => {
+      expect(err).to.not.exist();
+      const payload = {
+        count: 3
+      };
+
+      server.inject({ method: 'PUT', url: '/deployment/42/service/consul', payload }, (res) => {
+        expect(res.statusCode).to.equal(200);
+        expect(res.result.count).to.equal(3);
         done();
       });
     });
