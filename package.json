@@ -5,7 +5,7 @@
   "main": "./lib/index.js",
   "scripts": {
     "lint": "belly-button",
-    "test": "npm run lint && lab"
+    "test": "npm run lint && lab -c"
   },
   "keywords": [],
   "author": "wyatt",
