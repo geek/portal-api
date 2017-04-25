@@ -13,7 +13,7 @@ server.connection({ port: 8000 });
 const options = {
   info: {
     'title': 'Portal API Documentation',
-    'version': Pack.version,
+    'version': Pack.version
   }
 };
 
@@ -24,13 +24,15 @@ server.register([
   {
     register: HapiSwagger,
     options
-  }], (err) => {
+  }],
+  (err) => {
     handlerError(err);
     server.start((err) => {
       handlerError(err);
       console.log(`server started at http://localhost:${server.info.port}`);
     });
-});
+  }
+);
 
 function handlerError (error) {
   if (error) {
