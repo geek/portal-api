@@ -14,8 +14,8 @@ const it = lab.it;
 const expect = Code.expect;
 
 
-describe('hapi integration', () => {
-  it('can be registered', (done) => {
+describe('portal-api plugin', () => {
+  it('can be registered with hapi', (done) => {
     const server = new Hapi.Server();
     server.connection();
     server.register(PortalApi, (err) => {
@@ -249,6 +249,26 @@ describe('services', () => {
       server.inject({ method: 'PUT', url: '/deployment/42/service/consul', payload }, (res) => {
         expect(res.statusCode).to.equal(200);
         expect(res.result.count).to.equal(3);
+        done();
+      });
+    });
+  });
+});
+
+
+describe('graphql', () => {
+  it('route exists', (done) => {
+    const server = new Hapi.Server();
+    server.connection();
+    server.register(PortalApi, (err) => {
+      expect(err).to.not.exist();
+      const url = '/graphql?query=%7B%0A%20%20getDeployment(id%3A%201)%20%7B%0A%20%20%20%20id%0A%20%20%7D%0A%7D';
+
+      server.inject({ method: 'GET', url }, (res) => {
+        expect(res.statusCode).to.equal(200);
+        const result = JSON.parse(res.result);
+        expect(result.data).to.exist();
+        expect(result.data.getDeployment).to.exist();
         done();
       });
     });
